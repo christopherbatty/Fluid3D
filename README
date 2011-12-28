@@ -1,0 +1,6 @@
+This is a barebones 3D fluid simulator for animating inviscid free surface liquids.
+The "viewpls3D" sub-project provides a simple viewer for the resulting data.
+
+Questions or comments, contact:
+Christopher Batty
+christopherbatty@yahoo.com
