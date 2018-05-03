@@ -276,6 +276,7 @@ void keyPress(unsigned char key, int x, int y) {
       if(!running) {
          if(!filming) {
             filming = true;
+			glutTimerFunc(500, timer, 0);
          }
          else {
             filming = false;
