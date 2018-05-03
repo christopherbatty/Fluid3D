@@ -118,9 +118,13 @@ void timer(int value)
 
 
    if(running) {
-      read_frame(frame+1);
-      glutTimerFunc(1, timer, 0);
+	   if (read_frame(frame + 1)) {
+		   if (frame == 0) {
+			   running = false;
+		   }
+	   }
       glutPostRedisplay();
+	  glutTimerFunc(200, timer, 0);
    }
 
 }
@@ -246,6 +250,7 @@ struct RunButton : public Gluvi::Button{
       if(!filming) {
          if(!running) {
             running = true;
+			glutTimerFunc(100, timer, 0);
          }
          else {
             running = false;
@@ -260,7 +265,7 @@ void keyPress(unsigned char key, int x, int y) {
       if(!filming) {
          if(!running) {
             running = true;
-            glutTimerFunc(1000, timer, 0);
+            glutTimerFunc(500, timer, 0);
          }
          else {
             running = false;
