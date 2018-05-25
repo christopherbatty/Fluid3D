@@ -72,10 +72,10 @@ void set_view(Gluvi::Target3D &cam)
 
 void set_lights_and_material(int object)
 {
-   glEnable(GL_LIGHTING);
+   
    GLfloat global_ambient[4] = {0.1f, 0.1f, 0.1f, 1.0f};
-   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
-   glShadeModel(GL_SMOOTH);
+   //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
+   //glShadeModel(GL_SMOOTH);
 
    //Light #1
    GLfloat color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -92,21 +92,19 @@ void set_lights_and_material(int object)
    glLightfv(GL_LIGHT1, GL_POSITION, position2);
 
    GLfloat obj_color[4] = {.2, .3, .7};
-   glMaterialfv (GL_FRONT, GL_AMBIENT, obj_color);
-   glMaterialfv (GL_FRONT, GL_DIFFUSE, obj_color);
-
+   glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, obj_color);
+   glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, obj_color);
+   
    GLfloat specular[4] = {.4, .2, .8};
-   glMaterialf (GL_FRONT, GL_SHININESS, 32);
-   glMaterialfv (GL_FRONT, GL_SPECULAR, specular);
-   glEnable(GL_LIGHT0);
-   glEnable(GL_LIGHT1);
-
+   glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, 32);
+   glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+  
 }
 
 void timer(int value)
 {
    if(filming) {
-      Gluvi::ppm_screenshot(ppmfileformat, frame);
+      Gluvi::sgi_screenshot(ppmfileformat, frame);
       if(read_frame(frame+1)) {
          if(frame == 0) {
             filming = false;
@@ -135,20 +133,42 @@ void display(void)
    glClearColor(0.6f, 0.7f, 0.9f, 1);
 
    //Coordinate system
-   glDisable(GL_LIGHTING);
+   //glDisable(GL_LIGHTING);
    glBegin(GL_LINES);
    glColor3f(1,0,0); glVertex3f(0,0,0); glVertex3f(0.1,0,0);
    glColor3f(0,1,0); glVertex3f(0,0,0); glVertex3f(0,0.1,0);
    glColor3f(0,0,1); glVertex3f(0,0,0); glVertex3f(0,0,0.1);
    glEnd();
 
-   glEnable(GL_LIGHTING);
-   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+   glClearDepth(1);
+   glEnable(GL_DEPTH_TEST);
+   glEnable(GL_COLOR_MATERIAL);
+   glEnable(GL_LIGHTING); //Enable lighting
+   glEnable(GL_LIGHT0); //Enable light #0
+   glEnable(GL_LIGHT1); //Enable light #1
+   glEnable(GL_NORMALIZE); //Automatically normalize normals
 
-   set_lights_and_material(1); 
+						   //Add ambient light
+   GLfloat ambientColor[] = { 0.2f, 0.2f, 0.2f, 1.0f }; //Color (0.2, 0.2, 0.2)
+   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
+
+   //Add positioned light
+   GLfloat lightColor0[] = { 0.5f, 0.5f, 0.5f, 1.0f }; //Color (0.5, 0.5, 0.5)
+   GLfloat lightPos0[] = { 4.0f, 0.0f, 8.0f, 1.0f }; //Positioned at (4, 0, 8)
+   glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
+   glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
+
+   //Add directed light
+   GLfloat lightColor1[] = { 0.5f, 0.2f, 0.2f, 1.0f }; //Color (0.5, 0.2, 0.2)
+													   //Coming from the direction (-1, 0.5, 0.5)
+   GLfloat lightPos1[] = { -1.0f, 0.5f, 0.5f, 0.0f };
+   glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
+   glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);
+
+   //set_lights_and_material(1); 
 
    //Draw the liquid particles as simple spheres for now.
-   glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
+   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
    GLUquadric* particle_sphere;
    particle_sphere = gluNewQuadric();
    gluQuadricDrawStyle(particle_sphere, GLU_FILL );
@@ -161,7 +181,8 @@ void display(void)
    }
  
    //Draw the bound box for good measure
-   glDisable(GL_LIGHTING);
+   
+   //glDisable(GL_LIGHTING);
    glColor3f(0,0,0);
    glBegin(GL_LINES);
    glVertex3f(0,0,0);
@@ -221,7 +242,7 @@ struct ScreenShotButton : public Gluvi::Button{
    ScreenShotButton(const char *label, const char *filename_format_) : Gluvi::Button(label), filename_format(filename_format_) {}
    void action()
    { 
-      Gluvi::ppm_screenshot(filename_format, frame); 
+      Gluvi::sgi_screenshot(filename_format, frame); 
    }
 };
 
@@ -359,7 +380,7 @@ int main(int argc, char **argv)
    Gluvi::root.list.push_back(&frametext);
 
    ppmfileformat = new char[strlen(file_path.c_str())+100];
-   sprintf(ppmfileformat, "%sscreenshot%%04d.ppm", file_path.c_str());
+   sprintf(ppmfileformat, "%sscreenshot%%04d.sgi", file_path.c_str());
    printf("%s\n", ppmfileformat);
 
    ScreenShotButton screenshot("Screenshot", ppmfileformat);
