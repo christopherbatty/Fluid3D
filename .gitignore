@@ -1,0 +1,8 @@
+# CMake / Build Artifacts
+CMakeFiles
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+
+# Executables folder
+bin/
