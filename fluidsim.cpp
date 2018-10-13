@@ -98,7 +98,7 @@ void FluidSim::advance(float dt) {
 
 float FluidSim::cfl() {
 
-   float maxvel = 0;
+   double maxvel = 0;
    for(unsigned int i = 0; i < u.a.size(); ++i)
       maxvel = max(maxvel, fabs(u.a[i]));
    for(unsigned int i = 0; i < v.a.size(); ++i)

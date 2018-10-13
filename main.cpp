@@ -87,6 +87,8 @@ void export_particles(string path, int frame, const std::vector<Vec3f>& particle
    //write vertices
    for(unsigned int i = 0; i < particles.size(); ++i)
       outfile << particles[i][0] << " " << particles[i][1] << " " << particles[i][2] << std::endl;
+
+   std::cout << "Writing to: " << filepath << std::endl; 
    outfile.close();
 }
 

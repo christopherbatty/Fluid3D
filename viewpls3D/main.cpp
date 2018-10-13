@@ -5,7 +5,13 @@
 #include <string>
 
 #include "gluvi.h"
-#include "gl/glu.h"
+#if defined(__linux__)
+    #include "GL/glu.h"
+#else
+    #include "gl/glu.h"
+#endif
+
+#include <cstring>
 
 //Simple viewer for liquid simulator data
 //Hold shift and use the mouse buttons to manipulate the camera

@@ -8,6 +8,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include <cstring>
 
 // In this file:
 //   Array1<T>: a dynamic 1D array for plain-old-data (not objects)
