@@ -11,3 +11,6 @@ bin/
 .idea/
 *.cbp
 compile_commands.json
+*.filters
+*.dll
+*.user
