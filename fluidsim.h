@@ -7,6 +7,7 @@
 #include "pcgsolver/pcg_solver.h"
 
 #include <vector>
+#include <stdio.h>
 
 class FluidSim {
 
