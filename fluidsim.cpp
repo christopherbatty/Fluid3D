@@ -100,11 +100,11 @@ float FluidSim::cfl() {
 
    double maxvel = 0;
    for(unsigned int i = 0; i < u.a.size(); ++i)
-      maxvel = max(maxvel, fabs(u.a[i]));
+      maxvel = max(maxvel, (double)fabs(u.a[i]));
    for(unsigned int i = 0; i < v.a.size(); ++i)
-      maxvel = max(maxvel, fabs(v.a[i]));
+      maxvel = max(maxvel, (double)fabs(v.a[i]));
    for(unsigned int i = 0; i < w.a.size(); ++i)
-      maxvel = max(maxvel, fabs(w.a[i]));
+      maxvel = max(maxvel, (double)fabs(w.a[i]));
    
    return dx / maxvel;
 }
